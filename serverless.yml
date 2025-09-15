@@ -7,7 +7,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: eu-north-1
-  iam: 
+  iam:
     role: ${env:ROLE}
 
 build:
