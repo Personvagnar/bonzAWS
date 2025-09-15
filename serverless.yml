@@ -6,14 +6,53 @@ service: bonzAI
 provider:
   name: aws
   runtime: nodejs20.x
-  # Uncomment to easily set up a custom domain. Read the docs for more details:
-  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
-  # domain: api.example.com
+  region: eu-north-1
+  iam: 
+    role: ${env:ROLE}
+
+build:
+  esbuild:
+    minify: true
+
+package:
+  individually: true
 
 functions:
-  hello:
-    handler: handler.hello
+  postBooking:
+    handler: functions/postBooking/index.handler
     events:
       - httpApi:
-          path: /
+          path: /book
+          method: post
+
+  getBookings:
+    handler: functions/getBookings/index.handler
+    events:
+      - httpApi:
+          path: /bookings
           method: get
+
+  updateBooking:
+    handler: functions/updateBooking/index.handler
+    events:
+      - httpApi:
+          path: /update/{id}
+          method: put
+
+resources:
+  Resources:
+    BonzAIDataTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: BonzAIDataTable
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S # S står String som i datatyp
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH # HASH = Partition key
+          - AttributeName: sk
+            KeyType: RANGE # RANGE = Sort key
+        BillingMode: PAY_PER_REQUEST
