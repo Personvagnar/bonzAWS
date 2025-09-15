@@ -1,6 +1,7 @@
 import { PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { client } from '../../services/db.mjs';
 import { v4 as uuidv4 } from 'uuid';
+import { calcPrice } from '../../services/middleware/calcPrice.js';
 
 // const maxRooms = 20;
 
@@ -11,6 +12,9 @@ export const handler = async (event) => {
 
 	//hämtar vad användaren skrivit i body
 	const booking = JSON.parse(event.body);
+
+  //räknar ut totalpris
+  const total = calcPrice(booking.rooms);
 
 	// Gör en ny booking
 	const command = new PutItemCommand({
@@ -24,6 +28,7 @@ export const handler = async (event) => {
 			dateOUT: { S: booking.dateOUT },
 			name: { S: booking.name },
 			mail: { S: booking.mail },
+      total: { N: total.toString() },
 		},
 	});
 
@@ -38,7 +43,7 @@ export const handler = async (event) => {
 			name: booking.name,
 			guests: booking.guests,
 			rooms: booking.rooms,
-			// total,
+			total: total,
 			dateIN: booking.dateIN,
 			dateOUT: booking.dateOUT,
 		}),
