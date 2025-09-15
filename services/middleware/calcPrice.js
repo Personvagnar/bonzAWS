@@ -5,5 +5,8 @@ const prices = {
 };
 
 export function calcPrice(rooms) {
-  
+  return rooms.reduce((sum, room) => {
+    const price = prices[room.type] || 0;
+    return sum + price * room.count;
+  }, 0);
 };
