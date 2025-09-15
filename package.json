@@ -1,6 +1,5 @@
 {
-  "dependencies": {
-    "serverless-dotenv-plugin": "^6.0.0",
-    "uuid": "^13.0.0"
-  }
+	"dependencies": {
+		"uuid": "^13.0.0"
+	}
 }
