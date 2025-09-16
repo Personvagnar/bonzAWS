@@ -39,6 +39,13 @@ functions:
           path: /update/{id}
           method: put
 
+  deleteBooking:
+    handler: functions/deleteBooking/index.handler
+    events:
+      - httpApi:
+          path: /delete/{id}
+          method: delete
+
 resources:
   Resources:
     BonzAIDataTable:
