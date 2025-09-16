@@ -21,6 +21,12 @@ export const handler = async (event) => {
         mail: item.mail?.S || ""
       }));
 
+    if (bookings.length === 0) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "No booked bookings found" })
+      };
+    }
 
     return {
       statusCode: 200,
