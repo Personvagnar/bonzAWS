@@ -4,10 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { calcPrice } from '../../services/middleware/calcPrice.js';
 import { checkAvailability } from '../../services/middleware/checkAvailability.js'
 import { sendResponse } from '../../services/utils/respons.js';
-import {
-	isValidDateFormat,
-	isValidDate,
-} from '../../services/utils/validateDate.js';
+import { validateBooking } from '../../services/middleware/validateBooking.js';
 
 // const maxRooms = 20;
 
@@ -23,109 +20,11 @@ export const handler = async (event) => {
 	const total = calcPrice(booking.rooms);
 
 	//Validering
-
-	// validerar guest
-
-	if (typeof booking.guests !== 'number') {
+	const { valid, message } = validateBooking(booking);
+	if (!valid) {
 		return sendResponse(400, {
 			success: false,
-			message: 'Guests must be a number',
-		});
-	} else if (!Number.isInteger(booking.guests)) {
-		return sendResponse(400, {
-			success: false,
-			message: 'Guest must be a integer',
-		});
-	} else if (booking.guests < 0) {
-		return sendResponse(400, {
-			success: false,
-			message: 'Guest must be a positive number',
-		});
-	}
-	// validerar rooms
-
-	const rooms = booking.rooms;
-	for (let key in rooms) {
-		const value = rooms[key];
-
-		if (typeof value !== 'number') {
-			// om value inte är ett nummer
-			return sendResponse(400, {
-				success: false,
-				message: `${key} must be a number`,
-			});
-		}
-		if (!Number.isInteger(value)) {
-			// om value inte är ett heltal
-			return sendResponse(400, {
-				success: false,
-				message: `${key} must be an integer`,
-			});
-		}
-		if (value < 0) {
-			// om value är <= 0
-			return sendResponse(400, {
-				success: false,
-				message: `${key} must be positive`,
-			});
-		}
-	}
-
-	// validerar datum
-	const timeStampIN = Date.parse(booking.dateIN);
-	const dateObjectIN = new Date(timeStampIN);
-	const timeStampOUT = Date.parse(booking.dateOUT);
-	const dateObjectOUT = new Date(timeStampOUT);
-	const today = new Date();
-
-	// är dateIN formatet rätt och finns datumet
-	if (!isValidDateFormat(booking.dateIN) || !isValidDate(booking.dateIN)) {
-		return sendResponse(400, {
-			success: false,
-			message:
-				'Invalid dateIN format. Please use YYYY-MM-DD or dateIN does not exist.',
-		});
-	}
-	// är dateOUT formatet rätt och finns datumet
-	if (!isValidDateFormat(booking.dateOUT) || !isValidDate(booking.dateOUT)) {
-		return sendResponse(400, {
-			success: false,
-			message:
-				'Invalid dateOUT format. Please use YYYY-MM-DD or dateOUT does not exist.',
-		});
-	}
-
-	// Har dateIN eller dateOUT datum redan passerat
-	if (dateObjectIN.getTime() < today.getTime()) {
-		return sendResponse(400, {
-			success: false,
-			message: 'DateIN have already passed',
-		});
-	}
-	if (dateObjectOUT.getTime() < today.getTime()) {
-		return sendResponse(400, {
-			success: false,
-			message: 'DateOUT have already passed',
-		});
-	}
-	// kollar så att dateOUT är efter dateIN
-	if (timeStampOUT <= timeStampIN) {
-		return sendResponse(400, {
-			success: false,
-			message: 'dateOUT must be after dateIN',
-		});
-	}
-
-	// kollar så att name och mail finns
-	if (
-		!booking.name ||
-		booking.name.trim() === '' ||
-		!booking.mail ||
-		booking.mail.trim() === ''
-	) {
-		return sendResponse(400, {
-			success: false,
-			message: 'Name and Email must be provided',
+			message,
 		});
 	}
 
@@ -158,6 +57,7 @@ export const handler = async (event) => {
 		message: 'Booking Created',
 		bookingId: id,
 		name: booking.name,
+		mail: booking.mail,
 		guests: booking.guests,
 		rooms: booking.rooms,
 		total: total,
