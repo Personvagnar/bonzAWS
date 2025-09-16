@@ -28,6 +28,14 @@ export const handler = async (event) => {
 		});
 	}
 
+	try {
+		await checkAvailability(booking);
+	} catch (err) {
+		return sendResponse(400, {
+			message: err.message,
+		});
+	}
+
 	// Gör en ny booking
 	const command = new PutItemCommand({
 		TableName: 'BonzAIDataTable',

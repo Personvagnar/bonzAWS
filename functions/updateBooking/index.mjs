@@ -1,6 +1,7 @@
 import { PutItemCommand, GetItemCommand } from '@aws-sdk/client-dynamodb';
 import { client } from '../../services/db.mjs';
 import { calcPrice } from '../../services/middleware/calcPrice';
+import { checkAvailability } from '../../services/middleware/checkAvailability.js'
 import { sendResponse } from '../../services/utils/respons';
 import { validateBooking } from '../../services/middleware/validateBooking.js';
 
@@ -38,6 +39,14 @@ export const handler = async (event) => {
 				message: 'Booking not found',
 			});
 		}
+
+    try {
+		  await checkAvailability(booking);
+	  } catch (err) {
+		  return sendResponse(400, {
+			  message: err.message,
+		  });
+	  }
 
 		const command = new PutItemCommand({
 			TableName: 'BonzAIDataTable',
