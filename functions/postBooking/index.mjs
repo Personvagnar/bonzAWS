@@ -2,6 +2,7 @@ import { PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { client } from '../../services/db.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { calcPrice } from '../../services/middleware/calcPrice.js';
+import { checkAvailability } from '../../services/middleware/checkAvailability.js'
 import { sendResponse } from '../../services/utils/respons.js';
 import { validateBooking } from '../../services/middleware/validateBooking.js';
 
