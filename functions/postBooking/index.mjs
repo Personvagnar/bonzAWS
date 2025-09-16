@@ -19,13 +19,13 @@ export const handler = async (event) => {
 	const total = calcPrice(booking.rooms);
 
 	//Validering
-    const { valid, message } = validateBooking(booking);
-		if (!valid) {
+	const { valid, message } = validateBooking(booking);
+	if (!valid) {
 		return sendResponse(400, {
 			success: false,
 			message,
 		});
-		}
+	}
 
 	// Gör en ny booking
 	const command = new PutItemCommand({
@@ -56,6 +56,7 @@ export const handler = async (event) => {
 		message: 'Booking Created',
 		bookingId: id,
 		name: booking.name,
+		mail: booking.mail,
 		guests: booking.guests,
 		rooms: booking.rooms,
 		total: total,
