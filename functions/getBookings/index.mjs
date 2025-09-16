@@ -14,13 +14,23 @@ export const handler = async (event) => {
       .map(item => ({
         bookingId: item.sk.S,
         guests: parseInt(item.guests.N),
-        rooms: JSON.parse(item.rooms.S),
+        rooms: {
+          single: parseInt(item.rooms.M.single?.N || "0"),
+          double: parseInt(item.rooms.M.double?.N || "0"),
+          svite: parseInt(item.rooms.M.svite?.N || "0"),
+        },
         dateIN: item.dateIN.S,
         dateOUT: item.dateOUT.S,
         name: item.name.S,
         mail: item.mail?.S || ""
       }));
 
+    if (bookings.length === 0) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "No booked bookings found" })
+      };
+    }
 
     return {
       statusCode: 200,
