@@ -19,7 +19,7 @@ export const handler = async (event) => {
 	const booking = JSON.parse(event.body);
 
 	//räknar ut totalpris
-	// const total = calcPrice(booking.rooms);
+	const total = calcPrice(booking.rooms);
 
 	//Validering
 
@@ -146,7 +146,7 @@ export const handler = async (event) => {
 			dateOUT: { S: booking.dateOUT },
 			name: { S: booking.name },
 			mail: { S: booking.mail },
-			// total: { N: total.toString() },
+			total: { N: total.toString() },
 		},
 	});
 
@@ -159,7 +159,7 @@ export const handler = async (event) => {
 		name: booking.name,
 		guests: booking.guests,
 		rooms: booking.rooms,
-		// total: total,
+		total: total,
 		dateIN: booking.dateIN,
 		dateOUT: booking.dateOUT,
 	});
