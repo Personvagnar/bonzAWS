@@ -12,6 +12,10 @@ export function validateBooking(booking) {
 	if (!booking.name || booking.name.trim() === '') {
 		return { valid: false, message: 'Name is required' };
 	}
+	const nameRegex = /^[A-Za-z\s]+$/;
+	if (!nameRegex.test(booking.name)) {
+		return { valid: false, message: 'Name can only contain letters'};
+	}
 
 	if (!booking.mail || booking.mail.trim() === '') {
 		return { valid: false, message: 'Email is required' };
