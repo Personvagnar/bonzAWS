@@ -1,5 +1,5 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: fe24klassen
+org: ${env:ORG}
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: bonzAI
 
@@ -7,7 +7,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: eu-north-1
-  iam: 
+  iam:
     role: ${env:ROLE}
 
 build:
@@ -38,6 +38,13 @@ functions:
       - httpApi:
           path: /update/{id}
           method: put
+
+  deleteBooking:
+    handler: functions/deleteBooking/index.handler
+    events:
+      - httpApi:
+          path: /delete/{id}
+          method: delete
 
 resources:
   Resources:
