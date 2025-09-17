@@ -1,8 +1,8 @@
 import { PutItemCommand, GetItemCommand } from '@aws-sdk/client-dynamodb';
 import { client } from '../../services/db.mjs';
-import { calcPrice } from '../../services/middleware/calcPrice';
-import { checkAvailability } from '../../services/middleware/checkAvailability.js'
-import { sendResponse } from '../../services/utils/respons';
+import { calcPrice } from '../../services/middleware/calcPrice.js';
+import { checkAvailability } from '../../services/middleware/checkAvailability.js';
+import { sendResponse } from '../../services/utils/respons.js';
 import { validateBooking } from '../../services/middleware/validateBooking.js';
 
 export const handler = async (event) => {
@@ -40,13 +40,13 @@ export const handler = async (event) => {
 			});
 		}
 
-    try {
-		  await checkAvailability(booking);
-	  } catch (err) {
-		  return sendResponse(400, {
-			  message: err.message,
-		  });
-	  }
+		try {
+			await checkAvailability(booking);
+		} catch (err) {
+			return sendResponse(400, {
+				message: err.message,
+			});
+		}
 
 		const command = new PutItemCommand({
 			TableName: 'BonzAIDataTable',

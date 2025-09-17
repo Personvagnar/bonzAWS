@@ -1,6 +1,6 @@
 import { client } from '../../services/db.mjs';
 import { DeleteItemCommand } from '@aws-sdk/client-dynamodb';
-import { sendResponse } from '../../services/utils/respons';
+import { sendResponse } from '../../services/utils/respons.js';
 
 export const handler = async (event) => {
 	try {
